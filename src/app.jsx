@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { User, BookOpen, BarChart3, Upload, LogOut, Eye, EyeOff } from 'lucide-react';
 
 const DATOS_DEMO = {
@@ -125,6 +125,34 @@ function SistemaNotasEscolar() {
         }
 
         cerrarModalEliminarAlumno();
+    };
+
+    const abrirModalEditarPerfil = () => {
+        setFormEditarNombre(usuario.nombre);
+        setModalEditarPerfil(true);
+    };
+
+    const cerrarModalEditarPerfil = () => {
+        setModalEditarPerfil(false);
+        setFormEditarNombre("");
+    };
+
+    const guardarNombreProfesor = () => {
+        if (!formEditarNombre.trim()) {
+            alert("Por favor ingrese un nombre");
+            return;
+        }
+
+        setDatos(prevDatos => ({
+            ...prevDatos,
+            usuarios: prevDatos.usuarios.map(u =>
+                u.id === usuario.id ? { ...u, nombre: formEditarNombre } : u
+            )
+        }));
+
+        setUsuario(prev => ({ ...prev, nombre: formEditarNombre }));
+        cerrarModalEditarPerfil();
+        alert("Nombre actualizado exitosamente");
     };
 
     const crearAlumno = () => {
@@ -341,6 +369,15 @@ function SistemaNotasEscolar() {
                                 <p className="text-sm font-medium text-gray-800">{usuario.nombre}</p>
                                 <p className="text-xs text-gray-600 capitalize">{usuario.rol}</p>
                             </div>
+                            {usuario.rol === "profesor" && (
+                                <button
+                                    onClick={abrirModalEditarPerfil}
+                                    className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                                    title="Editar mi nombre"
+                                >
+                                    <User size={16} />
+                                </button>
+                            )}
                             <button
                                 onClick={logout}
                                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
@@ -928,6 +965,57 @@ function SistemaNotasEscolar() {
                                 className="flex-1 bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
                             >
                                 Sí, Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {modalEditarPerfil && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+                        <div className="mb-6">
+                            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <User className="w-8 h-8 text-blue-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800 text-center mb-2">Editar Mi Perfil</h3>
+                            <p className="text-gray-600 text-center text-sm">
+                                Ingrese su nombre completo
+                            </p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Nombre Completo *
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formEditarNombre}
+                                    onChange={(e) => setFormEditarNombre(e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="Ej: Juan Pérez González"
+                                />
+                            </div>
+
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                                <p className="font-semibold mb-1">ℹ️ Información:</p>
+                                <p>Este nombre aparecerá en el encabezado y en todas las secciones del sistema.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={cerrarModalEditarPerfil}
+                                className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={guardarNombreProfesor}
+                                className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                            >
+                                Guardar
                             </button>
                         </div>
                     </div>

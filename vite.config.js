@@ -3,4 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
     plugins: [react()],
+    base: '/edunotas/'   // 👈 aquí va el nombre exacto de tu repo en GitHub
 })
